@@ -1,0 +1,4 @@
+timezone: Asia/Tokyo
+
++step1:
+  echo>: Hello World!! ${session_time}

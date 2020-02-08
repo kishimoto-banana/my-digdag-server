@@ -1,0 +1,34 @@
+version: "3.7"
+
+networks:
+  digdag-server:
+    name: digdag-server
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:11
+    environment:
+      POSTGRES_DB: digdag-server
+      POSTGRES_USER: digdag
+      POSTGRES_PASSWORD: digdag-server
+    networks:
+      - digdag-server
+
+  digdag:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      WORKFLOW_URL: http://localhost:65432
+      WORKFLOW_METASTORE_USER: digdag
+      WORKFLOW_METASTORE_PASSWORD: digdag-server
+      WORKFLOW_METASTORE_HOST: postgres
+      WORKFLOW_METASTORE_PORT: 5432
+      WORKFLOW_METASTORE_DATABASE: digdag-server
+    ports:
+      - 65432:65432
+    depends_on:
+      - postgres
+    networks:
+      - digdag-server
